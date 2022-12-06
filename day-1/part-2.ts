@@ -1,0 +1,33 @@
+import { readFile } from "fs/promises";
+
+async function run() {
+  const content = await readFile(
+    new URL("./inputs.txt", import.meta.url),
+    "utf8"
+  );
+  const elves = content.split(/\r\n\r\n/gi);
+
+  // Highest is on the left
+  let totals: number[] = [0, 0, 0];
+
+  for (const elf of elves) {
+    const lines = elf.split(/\r\n/gi);
+    const total = lines.reduce((total, item) => total + Number(item), 0);
+
+    for (let i = 0; i < totals.length; i++) {
+      if (totals[i] < total) {
+        for (let j = totals.length - 1; j > i; j--) {
+          totals[j] = totals[j - 1];
+        }
+
+        totals[i] = total;
+        break;
+      }
+    }
+  }
+
+  console.log(totals);
+  console.log(totals.reduce((total, elf) => total + elf, 0));
+}
+
+run();
