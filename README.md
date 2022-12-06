@@ -21,3 +21,9 @@ npx ts-node --esm day-X/part-Y.ts
 > **e.g.** `npx ts-node --esm day-5/part-2.ts`
 
 Some scripts have some extended logging available to help understand the solution, keep an eye out for a `DEBUG_LOGGING` variable in each script file that you can set to `true` to enable extra logs.
+
+## Rust implementations
+
+Some of the challenges have additional solutions written in [rust](https://www.rust-lang.org/) that should be blazingly fast 🚀🔥 (emphasis on the **should**).
+
+To run the rust version change into the `day-X` directory and run `cargo run`.
