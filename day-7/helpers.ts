@@ -1,105 +1,63 @@
-export interface File {
-  name: string;
-  size: number;
+class File {
+  constructor(public name: string, public size: number) {}
 }
 
-export interface Directory {
-  name: string;
-  children: (File | Directory)[];
+class Directory {
+  children: Record<string, Directory | File> = {};
+
+  constructor(public name: string, public parent?: Directory) {}
+
+  private get childrenArray() {
+    return Object.values(this.children);
+  }
+
+  get childDirectories() {
+    return this.childrenArray.filter(
+      (child): child is Directory => child instanceof Directory
+    );
+  }
+
+  get size(): number {
+    return this.childrenArray.reduce((total, child) => total + child.size, 0);
+  }
+
+  ensureDir(dir: string): Directory {
+    if (!(dir in this.children)) {
+      this.children[dir] = new Directory(dir, this);
+    }
+
+    return this.children[dir] as Directory;
+  }
+
+  getAllDirectorySizes(): number[] {
+    return [
+      this.size,
+      ...this.childDirectories.flatMap((dir) => dir.getAllDirectorySizes()),
+    ];
+  }
 }
 
 export const parseCommandsIntoTree = (commands: string[]): Directory => {
-  const tree: Directory = { name: "/", children: [] };
-  let path: string[] = [];
+  const tree = new Directory("");
+
+  let current = tree;
 
   for (const line of commands) {
-    const currentDir = getCurrentDir(tree, path);
-
     if (line.startsWith("$")) {
       if (line === "$ cd /") {
-        path = [];
+        current = tree;
       } else if (line === "$ cd ..") {
-        path.pop();
-      } else if (/\$ cd .+/.test(line)) {
-        const match = /\$ cd (.+)/.exec(line);
-        path.push(match![1]);
-        // console.log(`Changed into directory ${path.join("/")}`);
-      } else {
-        // console.log("ls");
+        current = current.parent ?? tree;
+      } else if (line.startsWith("$ cd ")) {
+        current = current.ensureDir(line.slice(5));
       }
     } else if (line.startsWith("dir")) {
-      const dir = line.slice(4);
-      currentDir.children.push({ name: dir, children: [] });
+      current.ensureDir(line.slice(4));
     } else {
       const [size, filename] = line.split(" ");
-      currentDir.children.push({ name: filename, size: +size });
+      current.children[filename] = new File(filename, +size);
     }
   }
 
   return tree;
-};
-
-export const getCurrentDir = (tree: Directory, path: string[]): Directory => {
-  let currentDir = tree;
-
-  for (const folder of path) {
-    currentDir = currentDir.children.find(
-      (child) => child.name === folder
-    ) as Directory;
-  }
-
-  return currentDir;
-};
-
-export const getSizeForDirectory = (directory: Directory): number => {
-  let total = 0;
-
-  for (const child of directory.children) {
-    if ("size" in child) {
-      total += child.size;
-    } else {
-      total += getSizeForDirectory(child);
-    }
-  }
-
-  return total;
-};
-
-export const sumDirectoriesLessThanLimit = (
-  directory: Directory,
-  maxSize: number
-) => {
-  let total = 0;
-
-  for (const child of directory.children) {
-    if ("size" in child) {
-    } else {
-      const size = getSizeForDirectory(child);
-      if (size < maxSize) {
-        total += size;
-      }
-      total += sumDirectoriesLessThanLimit(child, maxSize);
-    }
-  }
-
-  return total;
-};
-
-export const getDirectorySizes = (
-  directory: Directory,
-  sizes: number[] = []
-): number[] => {
-  const size = getSizeForDirectory(directory);
-
-  sizes.push(size);
-
-  for (const child of directory.children) {
-    if ("size" in child) {
-      // meh
-    } else {
-      getDirectorySizes(child, sizes);
-    }
-  }
-
-  return sizes;
 };

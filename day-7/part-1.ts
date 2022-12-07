@@ -1,8 +1,5 @@
 import { readFile } from "fs/promises";
-import {
-  parseCommandsIntoTree,
-  sumDirectoriesLessThanLimit,
-} from "./helpers.js";
+import { parseCommandsIntoTree } from "./helpers.js";
 
 const MAX_SIZE = 100000;
 
@@ -15,7 +12,13 @@ async function run() {
   const lines = inputs.split(/\r?\n/g);
 
   const tree = parseCommandsIntoTree(lines);
-  console.log(sumDirectoriesLessThanLimit(tree, MAX_SIZE));
+
+  const result = tree
+    .getAllDirectorySizes()
+    .filter((size) => size < MAX_SIZE)
+    .reduce((total, size) => total + size, 0);
+
+  console.log(result);
 }
 
 run();
