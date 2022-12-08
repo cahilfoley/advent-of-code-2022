@@ -45,7 +45,7 @@ async function run() {
     trees.push(Array.from(line).map((char) => Number(char)));
   }
   const totalVisible = trees
-    .flatMap((row, y) => row.flatMap((col, x) => isTreeVisible(trees, x, y)))
+    .flatMap((row, y) => row.map((tree, x) => isTreeVisible(trees, x, y)))
     .filter((x) => !!x).length;
 
   console.log(totalVisible);

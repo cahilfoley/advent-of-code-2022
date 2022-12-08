@@ -53,7 +53,7 @@ async function run() {
   }
 
   const scenicScores = trees.flatMap((row, y) =>
-    row.flatMap((col, x) => getScenicScoreForTree(trees, x, y))
+    row.map((tree, x) => getScenicScoreForTree(trees, x, y))
   );
 
   console.log(Math.max(...scenicScores));
