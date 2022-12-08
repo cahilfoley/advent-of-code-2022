@@ -1,6 +1,7 @@
 import { readFile } from "fs/promises";
 
 function isTreeVisible(grid: number[][], treeX: number, treeY: number) {
+  // Edge trees are always visible
   if (treeX === 0 || treeX === grid[treeY].length - 1) return true;
   if (treeY === 0 || treeY === grid.length - 1) return true;
 
@@ -37,16 +38,13 @@ async function run() {
     "utf8"
   );
 
-  const trees: number[][] = [];
+  const trees = inputs
+    .split(/\r?\n/g)
+    .map((line) => Array.from(line).map((char) => Number(char)));
 
-  const lines = inputs.split(/\r?\n/g);
-
-  for (const line of lines) {
-    trees.push(Array.from(line).map((char) => Number(char)));
-  }
-  const totalVisible = trees
-    .flatMap((row, y) => row.map((tree, x) => isTreeVisible(trees, x, y)))
-    .filter((x) => !!x).length;
+  const totalVisible = trees.flatMap((row, y) =>
+    row.filter((tree, x) => isTreeVisible(trees, x, y))
+  ).length;
 
   console.log(totalVisible);
 }

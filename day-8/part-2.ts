@@ -5,12 +5,11 @@ function getScenicScoreForTree(
   treeX: number,
   treeY: number
 ): number {
-  const totals = {
-    left: 0,
-    right: 0,
-    up: 0,
-    down: 0,
-  };
+  // Edge trees always get 0 in some direction
+  if (treeX === 0 || treeX === trees[treeY].length - 1) return 0;
+  if (treeY === 0 || treeY === trees.length - 1) return 0;
+
+  const totals = { left: 0, right: 0, up: 0, down: 0 };
   const height = trees[treeY][treeX];
 
   // Visible to the left
@@ -44,13 +43,9 @@ async function run() {
     "utf8"
   );
 
-  const trees: number[][] = [];
-
-  const lines = inputs.split(/\r?\n/g);
-
-  for (const line of lines) {
-    trees.push(Array.from(line).map((char) => Number(char)));
-  }
+  const trees = inputs
+    .split(/\r?\n/g)
+    .map((line) => Array.from(line).map((char) => Number(char)));
 
   const scenicScores = trees.flatMap((row, y) =>
     row.map((tree, x) => getScenicScoreForTree(trees, x, y))
