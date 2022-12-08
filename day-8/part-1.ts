@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 
 function isTreeVisible(grid: number[][], treeX: number, treeY: number) {
-  if (treeX === 0 || treeX === grid[0].length - 1) return true;
+  if (treeX === 0 || treeX === grid[treeY].length - 1) return true;
   if (treeY === 0 || treeY === grid.length - 1) return true;
 
   const height = grid[treeY][treeX];
