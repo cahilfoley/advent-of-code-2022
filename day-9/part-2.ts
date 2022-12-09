@@ -14,7 +14,10 @@ async function run() {
   for (const line of lines) {
     const [direction, distance] = line.split(" ");
     for (let i = 0; i < Number(distance); i++) {
+      // Move the head in the direction indicated
       knots[0].move(direction as Direction);
+
+      // Each subsequent knot needs to follow the one before it
       for (let j = 1; j < knots.length; j++) {
         knots[j].follow(knots[j - 1]);
       }
