@@ -1,5 +1,4 @@
 --- Day 11: Monkey in the Middle ---
-
 As you finally start making your way upriver, you realize your pack is much lighter than you remember. Just then, one of the items from your pack goes flying overhead. Monkeys are playing Keep Away with your missing things!
 
 To get your stuff back, you need to be able to predict where the monkeys will throw your items. After some careful observation, you realize the monkeys operate based on how worried you are about each item.
@@ -213,9 +212,7 @@ Figure out which monkeys to chase by counting how many items they inspect over 2
 
 Your puzzle answer was 117624.
 
-
 --- Part Two ---
-
 You're worried you might not ever get your items back. So worried, in fact, that your relief that a monkey's inspection didn't damage an item no longer causes your worry level to be divided by three.
 
 Unfortunately, that relief was all that was keeping your worry levels from reaching ridiculous levels. You'll need to find another way to keep your worry levels manageable.
